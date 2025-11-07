@@ -29,29 +29,6 @@ def _post_form(url: str, headers: dict, data_dict: dict, timeout_sec: int = 10) 
         raw = resp.read().decode("utf-8")
         return json.loads(raw)
 
-def request_token_with_code(auth_code: str) -> dict:
-    """
-    grant_type=authorization_code
-    Cafe24에서 최초 access_token/refresh_token 발급
-    """
-    cfg = get_cafe24_config()
-    if not all([cfg["mall_id"], cfg["client_id"], cfg["client_secret"], cfg["redirect_uri"]]):
-        raise Cafe24APIError("Cafe24 config not set properly")
-
-    token_url = f"https://{cfg['mall_id']}.cafe24api.com/api/v2/oauth/token"
-
-    headers = {
-        "Authorization": _basic_auth_header(cfg["client_id"], cfg["client_secret"]),
-        "Content-Type": "application/x-www-form-urlencoded",
-    }
-    payload = {
-        "grant_type": "authorization_code",
-        "code": auth_code,
-        "redirect_uri": cfg["redirect_uri"],
-    }
-
-    return _post_form(token_url, headers, payload)
-
 def request_token_with_refresh() -> dict:
     """
     grant_type=refresh_token
