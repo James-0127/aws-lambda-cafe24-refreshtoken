@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv(".env.local") 
+
 from lambda_function import lambda_handler
 
 def main():
